@@ -1,7 +1,9 @@
 from setuptools import find_packages
 from setuptools import setup
+import os
 
-version = '1.4.7'
+version = open(os.path.join(os.path.dirname(__file__),
+                            'plone/app/upgrade/version.txt')).read().strip()
 
 setup(
     name='plone.app.upgrade',
