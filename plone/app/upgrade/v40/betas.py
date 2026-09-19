@@ -240,7 +240,7 @@ def fix_cataloged_interface_names(context):
         if delete or rename:
             logger.info('Cleaning up `object_provides` _unindex.')
             _unindex = index._unindex
-            for pos, (docid, value) in enumerate(_unindex.iteritems()):
+            for pos, (docid, value) in enumerate(_unindex.items()):
                 new_value = list(sorted((set(value) - delete).union(rename)))
                 if value != new_value:
                     _unindex[docid] = new_value

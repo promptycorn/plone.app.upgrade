@@ -10,7 +10,7 @@ class FactoryTool(SimpleItem):
     ''' Compatibility code for portal_factory
     '''
 
-    def __nonzero__(self):
+    def __bool__(self):
         ''' Always evealuate to False
         '''
         return 0

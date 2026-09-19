@@ -1,3 +1,3 @@
-import alphas
-import betas
-import final
+from . import alphas
+from . import betas
+from . import final

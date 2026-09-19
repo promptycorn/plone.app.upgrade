@@ -5,12 +5,10 @@ from Products.GenericSetup.interfaces import ISetupTool
 from Products.GenericSetup.registry import _export_step_registry
 from Products.GenericSetup.registry import _import_step_registry
 from Products.ZCatalog.ProgressHandler import ZLogHandler
-from types import ListType
-from types import TupleType
 from ZODB.POSException import ConflictError
+import types
 
 import logging
-import new
 import pkg_resources
 import sys
 import transaction
@@ -50,15 +48,15 @@ def safeEditProperty(obj, key, value, data_type='string'):
 def addLinesToProperty(obj, key, values):
     if obj.hasProperty(key):
         data = getattr(obj, key)
-        if type(data) is TupleType:
+        if type(data) is tuple:
             data = list(data)
-        if type(values) is ListType:
+        if type(values) is list:
             data.extend(values)
         else:
             data.append(values)
         obj._updateProperty(key, data)
     else:
-        if type(values) is not ListType:
+        if type(values) is not list:
             values = [values]
         obj._setProperty(key, values, 'lines')
 
@@ -118,7 +116,7 @@ def cleanUpSkinsTool(context):
     """
     skins = getToolByName(context, 'portal_skins')
     # Remove directory views for directories missing on the filesystem
-    for name in skins.keys():
+    for name in list(skins.keys()):
         directory_view = skins.get(name)
         reg_key = getattr(directory_view, '_dirpath', None)
         if not reg_key:
@@ -131,9 +129,9 @@ def cleanUpSkinsTool(context):
             skins._delObject(name)
 
     transaction.savepoint(optimistic=True)
-    existing = skins.keys()
+    existing = list(skins.keys())
     # Remove no longer existing entries from skin selections
-    for layer, paths in skins.selections.items():
+    for layer, paths in list(skins.selections.items()):
         new_paths = []
         for name in paths.split(','):
             if name in existing:
@@ -196,7 +194,7 @@ def alias_module(name, target):
         try:
             __import__(module_name)
         except ImportError:
-            new_module = new.module(module_name)
+            new_module = types.ModuleType(module_name)
             sys.modules[module_name] = new_module
             if module is not None:
                 setattr(module, parts[i - 1], new_module)
@@ -263,7 +261,7 @@ def updateIconsInBrains(context, typesToUpdate=None):
         getIconPos = _catalog.schema.get('getIcon', None)
     ttool = getToolByName(context, 'portal_types')
     empty_icons = []
-    for name in typesToUpdate.keys():
+    for name in list(typesToUpdate.keys()):
         fti = ttool.get(name)
         if fti:
             icon_expr = fti.getIconExprObject()

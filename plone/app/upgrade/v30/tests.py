@@ -333,9 +333,9 @@ class TestMigrations_v2_5_x(MigrationTest):
     def testLegacyPortletsConverted(self):
         self.setRoles(('Manager',))
         leftColumn = getUtility(
-            IPortletManager, name=u'plone.leftcolumn', context=self.portal)
+            IPortletManager, name='plone.leftcolumn', context=self.portal)
         rightColumn = getUtility(
-            IPortletManager, name=u'plone.rightcolumn', context=self.portal)
+            IPortletManager, name='plone.rightcolumn', context=self.portal)
 
         left = getMultiAdapter((self.portal, leftColumn,),
                                IPortletAssignmentMapping, context=self.portal)
@@ -367,13 +367,13 @@ class TestMigrations_v2_5_x(MigrationTest):
             right = getMultiAdapter(
                 (self.portal, rightColumn,), IPortletAssignmentMapping, context=self.portal)
 
-            lp = left.values()
+            lp = list(left.values())
             self.assertEqual(2, len(lp))
 
             self.assertTrue(isinstance(lp[0], portlets.recent.Assignment))
             self.assertTrue(isinstance(lp[1], portlets.news.Assignment))
 
-            rp = right.values()
+            rp = list(right.values())
             self.assertEqual(1, len(rp))
             self.assertTrue(isinstance(rp[0], portlets.login.Assignment))
 
@@ -386,9 +386,9 @@ class TestMigrations_v2_5_x(MigrationTest):
     def testLegacyPortletsConvertedNoSlots(self):
         self.setRoles(('Manager',))
         leftColumn = getUtility(
-            IPortletManager, name=u'plone.leftcolumn', context=self.portal)
+            IPortletManager, name='plone.leftcolumn', context=self.portal)
         rightColumn = getUtility(
-            IPortletManager, name=u'plone.rightcolumn', context=self.portal)
+            IPortletManager, name='plone.rightcolumn', context=self.portal)
 
         left = getMultiAdapter((self.portal, leftColumn,),
                                IPortletAssignmentMapping, context=self.portal)
@@ -417,13 +417,13 @@ class TestMigrations_v2_5_x(MigrationTest):
         right = getMultiAdapter(
             (self.portal, rightColumn,), IPortletAssignmentMapping, context=self.portal)
 
-        lp = left.values()
+        lp = list(left.values())
         self.assertEqual(2, len(lp))
 
         self.assertTrue(isinstance(lp[0], portlets.recent.Assignment))
         self.assertTrue(isinstance(lp[1], portlets.news.Assignment))
 
-        rp = right.values()
+        rp = list(right.values())
         self.assertEqual(0, len(rp))
 
         members = self.portal.Members
@@ -435,9 +435,9 @@ class TestMigrations_v2_5_x(MigrationTest):
     def testLegacyPortletsConvertedBadSlots(self):
         self.setRoles(('Manager',))
         leftColumn = getUtility(
-            IPortletManager, name=u'plone.leftcolumn', context=self.portal)
+            IPortletManager, name='plone.leftcolumn', context=self.portal)
         rightColumn = getUtility(
-            IPortletManager, name=u'plone.rightcolumn', context=self.portal)
+            IPortletManager, name='plone.rightcolumn', context=self.portal)
 
         left = getMultiAdapter((self.portal, leftColumn,),
                                IPortletAssignmentMapping, context=self.portal)
@@ -465,13 +465,13 @@ class TestMigrations_v2_5_x(MigrationTest):
         self.assertEqual(self.portal.left_slots, [])
         self.assertEqual(self.portal.right_slots, [])
 
-        lp = left.values()
+        lp = list(left.values())
         self.assertEqual(2, len(lp))
 
         self.assertTrue(isinstance(lp[0], portlets.recent.Assignment))
         self.assertTrue(isinstance(lp[1], portlets.news.Assignment))
 
-        rp = right.values()
+        rp = list(right.values())
         self.assertEqual(1, len(rp))
         self.assertTrue(isinstance(rp[0], portlets.login.Assignment))
 
@@ -484,9 +484,9 @@ class TestMigrations_v2_5_x(MigrationTest):
     def testLegacyPortletsConvertedNoMembersFolder(self):
         self.setRoles(('Manager',))
         leftColumn = getUtility(
-            IPortletManager, name=u'plone.leftcolumn', context=self.portal)
+            IPortletManager, name='plone.leftcolumn', context=self.portal)
         rightColumn = getUtility(
-            IPortletManager, name=u'plone.rightcolumn', context=self.portal)
+            IPortletManager, name='plone.rightcolumn', context=self.portal)
 
         left = getMultiAdapter((self.portal, leftColumn,),
                                IPortletAssignmentMapping, context=self.portal)
@@ -514,13 +514,13 @@ class TestMigrations_v2_5_x(MigrationTest):
         self.assertEqual(self.portal.left_slots, [])
         self.assertEqual(self.portal.right_slots, [])
 
-        lp = left.values()
+        lp = list(left.values())
         self.assertEqual(2, len(lp))
 
         self.assertTrue(isinstance(lp[0], portlets.recent.Assignment))
         self.assertTrue(isinstance(lp[1], portlets.news.Assignment))
 
-        rp = right.values()
+        rp = list(right.values())
         self.assertEqual(1, len(rp))
         self.assertTrue(isinstance(rp[0], portlets.login.Assignment))
 
@@ -842,7 +842,7 @@ class TestMigrations_v3_0_alpha2(MigrationTest):
         for i in range(2):
             installProduct('PloneLanguageTool', self.portal)
             self.assertTrue(qi.isProductInstalled('PloneLanguageTool'))
-            self.assertTrue('portal_languages' in self.portal.keys())
+            self.assertTrue('portal_languages' in list(self.portal.keys()))
 
 
 class TestMigrations_v3_0(MigrationTest):
@@ -891,22 +891,22 @@ class TestMigrations_v3_0(MigrationTest):
             category = 'global'
             self.actions._setObject(category, ActionCategory(id=category))
 
-        if not 'reply' in object_.keys():
+        if not 'reply' in list(object_.keys()):
             object_._setObject('reply', reply)
         user = self.actions.user
-        if not 'logged_in' in user.keys():
+        if not 'logged_in' in list(user.keys()):
             user._setObject('logged_in', logged_in)
-        if not 'change_ownership' in object_tabs.keys():
+        if not 'change_ownership' in list(object_tabs.keys()):
             object_tabs._setObject('change_ownership', change_ownership)
         del object_tabs
 
         # Test it twice
         for i in range(2):
             cleanupOldActions(self.portal)
-            self.assertFalse('reply' in object_.keys())
-            self.assertFalse('logged_in' in user.keys())
-            self.assertFalse('object_tabs' in self.actions.keys())
-            self.assertFalse('global' in self.actions.keys())
+            self.assertFalse('reply' in list(object_.keys()))
+            self.assertFalse('logged_in' in list(user.keys()))
+            self.assertFalse('object_tabs' in list(self.actions.keys()))
+            self.assertFalse('global' in list(self.actions.keys()))
 
     def testCharsetCleanup(self):
         if not self.portal.hasProperty('default_charset'):

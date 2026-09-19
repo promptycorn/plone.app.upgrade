@@ -1,5 +1,5 @@
 # Plone 3.0
-import alphas
-import betas
-import rcs
-import final_three0x
+from . import alphas
+from . import betas
+from . import rcs
+from . import final_three0x

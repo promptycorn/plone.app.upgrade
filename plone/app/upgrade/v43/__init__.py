@@ -1,1 +1,1 @@
-import alphas
+from . import alphas

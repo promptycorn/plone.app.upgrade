@@ -18,7 +18,7 @@ from Products.CMFPlone.utils import getFSVersionTuple
 from Products.GenericSetup import profile_registry
 from Products.GenericSetup.interfaces import EXTENSION
 
-import alphas
+from . import alphas
 import unittest
 
 PLONE5 = getFSVersionTuple()[0] >= 5
@@ -75,7 +75,7 @@ class TestMigrations_v4_3alpha1(MigrationTest):
             (self.portal, request, plone_view), IContentProvider, 'plone.htmlhead')
         viewlets = getAdapters(
             (manager.context, manager.request, manager.__parent__, manager), IViewlet)
-        self.assertFalse(u'tinymce.configuration' in dict(viewlets))
+        self.assertFalse('tinymce.configuration' in dict(viewlets))
 
     def testInstallThemingNotPreviouslyInstalled(self):
         from plone.app.theming.interfaces import IThemeSettings
@@ -159,7 +159,7 @@ class TestMigrations_v4_3final_to4308(MigrationTest):
         from Products.GenericSetup.upgrade import listUpgradeSteps
         relevantStep = [step for step in listUpgradeSteps(
             portal.portal_setup, 'Products.CMFPlone:plone', '4307')[0] if
-            step['title'] == u'Add default Plone password policy'][0]
+            step['title'] == 'Add default Plone password policy'][0]
         # execute the step
         relevantStep['step'].handler(portal)
         # now it has been added...

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.app.upgrade.tests.base import MigrationTest
 from plone.app.upgrade.utils import loadMigrationProfile
-import betas
+from . import betas
 
 
 class TestMigrations_v4_2beta1(MigrationTest):

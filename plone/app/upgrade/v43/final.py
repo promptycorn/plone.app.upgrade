@@ -34,7 +34,7 @@ def addScalingQualitySetting(context):
 
 def upgradeContentRulesNames(context):
     storage = queryUtility(IRuleStorage)
-    for key in storage.keys():
+    for key in list(storage.keys()):
         check_rules_with_dotted_name_moved(storage[key])
 
 
@@ -273,7 +273,7 @@ def removeFakeKupu(context):
         if tool is None:
             continue
         resources = tool.getResourcesDict()
-        for resource_id, resource in resources.items():
+        for resource_id, resource in list(resources.items()):
             expression = resource.getExpression()
             if expression.startswith(bad_expr):
                 tool.unregisterResource(resource_id)

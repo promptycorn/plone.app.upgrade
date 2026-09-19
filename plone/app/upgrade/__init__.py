@@ -3,8 +3,8 @@ import sys
 from zope.interface import implementer
 from Products.CMFQuickInstallerTool.interfaces import INonInstallable
 from plone.app.upgrade.utils import alias_module
-import bbb
-import bbbd
+from . import bbb
+from . import bbbd
 
 
 @implementer(INonInstallable)
@@ -36,16 +36,13 @@ except ImportError:
     sys.modules['Products.GroupUserFolder.GroupUserFolder'] = gruf_bbb
 
 
-try:
-    from zope.app.cache.interfaces.ram import IRAMCache
-except ImportError:
-    import zope.ramcache.interfaces.ram
-    alias_module('zope.app.cache.interfaces.ram', zope.ramcache.interfaces.ram)
-    import zope.ramcache.ram
-    alias_module('zope.app.cache.ram', zope.ramcache.ram)
+import zope.ramcache.interfaces.ram
+import zope.ramcache.ram
+alias_module('zope.app.cache.interfaces.ram', zope.ramcache.interfaces.ram)
+alias_module('zope.app.cache.ram', zope.ramcache.ram)
 
 if 'products.kupu' not in pkg_resources.working_set.by_key:
-    import kupu_bbb
+    from . import kupu_bbb
     alias_module('Products.kupu.plone.plonelibrarytool', kupu_bbb)
 
 try:

@@ -1,2 +1,2 @@
-import alphas
-import betas
+from . import alphas
+from . import betas

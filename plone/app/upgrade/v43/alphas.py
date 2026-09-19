@@ -26,7 +26,7 @@ def reindex_sortable_title(context):
     pghandler = ZLogHandler(10000)
     logger.info('Analyzing sortable_title index')
     pghandler.init('Analyzing sortable_title index', len(sort_title_index))
-    for i, (name, rids) in enumerate(sort_title_index._index.iteritems()):
+    for i, (name, rids) in enumerate(sort_title_index._index.items()):
         pghandler.report(i)
         if len(name) > MAX_SORTABLE_TITLE or num_sort_regex.match(name):
             if hasattr(rids, 'keys'):
@@ -215,7 +215,7 @@ def removeKSS(context):
     # remove KSS-related skin layers from all skins
     skinstool = getToolByName(context, 'portal_skins')
     selections = skinstool._getSelections()
-    for skin_name in selections.keys():
+    for skin_name in list(selections.keys()):
         layers = selections[skin_name].split(',')
         if 'plone_kss' in layers:
             layers.remove('plone_kss')

@@ -24,7 +24,7 @@ def optimize_rangeindex_floor_ceiling(index):
     _removeForwardIndexEntry = index._removeForwardIndexEntry
     _unindex = index._unindex
     i = 0
-    for docid, datum in _unindex.iteritems():
+    for docid, datum in _unindex.items():
         if datum == (None, None):
             continue
         since, until = datum
@@ -58,7 +58,7 @@ def optimize_rangeindex_int_iiset(index):
         if tree is not None:
             logger.info('Converting tree `%s`.' % name)
             i = 0
-            for k, v in tree.items():
+            for k, v in list(tree.items()):
                 if isinstance(v, IISet):
                     tree[k] = IITreeSet(v)
                     i += 1

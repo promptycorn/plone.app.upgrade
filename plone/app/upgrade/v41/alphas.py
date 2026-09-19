@@ -105,7 +105,7 @@ def add_siteadmin_role(context):
             state = workflow.states[state_id]
             if state.permission_roles is None:
                 continue
-            for permission_id, roles in state.permission_roles.items():
+            for permission_id, roles in list(state.permission_roles.items()):
                 if 'Manager' in roles:
                     new_roles = list(roles)
                     new_roles.append('Site Administrator')
@@ -168,7 +168,7 @@ def convert_to_booleanindex(catalog, index):
     sets = {0: IITreeSet(), 1: IITreeSet()}
     old_unindex = index._unindex
     index._unindex = _unindex = IIBTree()
-    for k, v in old_unindex.items():
+    for k, v in list(old_unindex.items()):
         # docid to value (True, False)
         value = int(bool(v))
         _unindex[k] = value
@@ -205,7 +205,7 @@ def convert_to_uuidindex(catalog, index):
     old_index = index._index
     if not isinstance(old_index, OIBTree):
         index._index = _index = OIBTree()
-        for k, v in old_index.items():
+        for k, v in list(old_index.items()):
             if k is None:
                 continue
             if isinstance(v, int):
@@ -214,9 +214,9 @@ def convert_to_uuidindex(catalog, index):
                 if isinstance(v, (IISet, IITreeSet)):
                     # inconsistent data, one uid with multiple docids
                     paths = dict((tuple(catalog.getpath(k).split('/')), k)
-                                 for k in v.keys())
+                                 for k in list(v.keys()))
                     shortest = min(paths, key=len)
-                    for path, key in paths.iteritems():
+                    for path, key in paths.items():
                         if path[:len(shortest)] != shortest:
                             raise ValueError(
                                 'Inconsistent UID index, UID %s is associated '

@@ -1,5 +1,3 @@
-from types import InstanceType
-
 from Products.CMFCore.utils import getToolByName
 from Products.MimetypesRegistry.mime_types.mtr_mimetypes import text_web_intelligent
 from Products.PortalTransforms.transforms.web_intelligent_plain_text_to_html import register as intel2html_register
@@ -29,7 +27,7 @@ def addIntelligentText(context):
     # Add mime type
     # See MimetypesRegistry/mime_types/mtr_mimetypes.py
     mt = text_web_intelligent
-    if type(mt) != InstanceType:
+    if isinstance(mt, type):
         mt = mt()
     mtr = getToolByName(context, 'mimetypes_registry')
     mtr.register(mt)

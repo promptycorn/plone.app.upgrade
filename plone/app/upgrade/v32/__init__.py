@@ -1,1 +1,1 @@
-import betas
+from . import betas

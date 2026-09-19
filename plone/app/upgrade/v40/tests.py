@@ -209,8 +209,8 @@ class TestMigrations_v4_0alpha1(MigrationTest):
         # Test it twice
         for i in range(2):
             sm.unregisterUtility(provided=IRAMCache)
-            from zope.app.cache.interfaces.ram import IRAMCache as OldIRAMCache
-            from zope.app.cache.ram import RAMCache as OldRAMCache
+            from zope.ramcache.interfaces.ram import IRAMCache as OldIRAMCache
+            from zope.ramcache.ram import RAMCache as OldRAMCache
             sm.registerUtility(factory=OldRAMCache, provided=OldIRAMCache)
 
             addOrReplaceRamCache(self.portal)
@@ -271,7 +271,7 @@ class TestMigrations_v4_0alpha1(MigrationTest):
         if 'referencebrowser' not in skins_tool:
             return
         sels = skins_tool._getSelections()
-        for skinname, layer in sels.items():
+        for skinname, layer in list(sels.items()):
             layers = layer.split(',')
             self.assertFalse('ATReferenceBrowserWidget' in layers)
             layers.remove('referencebrowser')
@@ -283,7 +283,7 @@ class TestMigrations_v4_0alpha1(MigrationTest):
         setupReferencebrowser(self.portal)
 
         sels = skins_tool._getSelections()
-        for skinname, layer in sels.items():
+        for skinname, layer in list(sels.items()):
             layers = layer.split(',')
             self.assertTrue('referencebrowser' in layers)
 
@@ -568,7 +568,7 @@ class TestMigrations_v4_0beta4(MigrationTest):
         ftool = self.portal.portal_factory
         ftool.manage_setPortalFactoryTypes(listOfTypeIds=list(l))
 
-        for i in xrange(2):
+        for i in range(2):
             loadMigrationProfile(self.portal, self.profile)
             removeLargePloneFolder(self.portal)
             self.assertFalse('Large Plone Folder' in self.portal.portal_types)

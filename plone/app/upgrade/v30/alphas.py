@@ -1,9 +1,6 @@
 import os
 
-from five.localsitemanager import find_next_sitemanager
-from five.localsitemanager import make_objectmanager_site
-from five.localsitemanager.registry import FiveVerifyingAdapterLookup
-from five.localsitemanager.registry import PersistentComponents
+from Products.Five.component import enableSite as make_objectmanager_site
 from plone.app.portlets.utils import convert_legacy_portlets
 from plone.portlets.interfaces import IPortletManager
 from plone.portlets.interfaces import ILocalPortletAssignmentManager
@@ -13,8 +10,14 @@ from zope.component import getMultiAdapter
 from zope.component import getSiteManager
 from zope.component import getUtility
 from zope.component.globalregistry import base
-from zope.component.interfaces import ComponentLookupError
-from zope.site.hooks import setSite
+from zope.component.persistentregistry import PersistentComponents
+try:
+    from zope.interface.interfaces import ComponentLookupError
+except ImportError:
+    from zope.interface.interfaces import ComponentLookupError
+from zope.interface.adapter import VerifyingAdapterLookup
+from zope.site.site import _findNextSiteManager as find_next_sitemanager
+from zope.component.hooks import setSite
 
 from Acquisition import aq_base
 from App.Common import package_home
@@ -141,10 +144,10 @@ def enableZope3Site(context):
         portal.setSiteManager(components)
         logger.info("Site manager '%s' added." % name)
     else:
-        if components.utilities.LookupClass != FiveVerifyingAdapterLookup:
+        if components.utilities.LookupClass != VerifyingAdapterLookup:
             # for CMF 2.1 beta instances
             components.__parent__ = portal
-            components.utilities.LookupClass = FiveVerifyingAdapterLookup
+            components.utilities.LookupClass = VerifyingAdapterLookup
             components.utilities._createLookup()
             components.utilities.__parent__ = components
             logger.info('LookupClass replaced.')
@@ -201,7 +204,7 @@ def migrateOldActions(context):
 
 def _check_ascii(text):
     try:
-        unicode(text, 'ascii')
+        str(text, 'ascii')
     except UnicodeDecodeError:
         return False
     return True
@@ -255,7 +258,7 @@ def convertLegacyPortlets(context):
         membersRightSlots = getattr(aq_base(members), 'right_slots', None)
         if membersRightSlots == []:
             rightColumn = getUtility(
-                IPortletManager, name=u'plone.rightcolumn', context=portal)
+                IPortletManager, name='plone.rightcolumn', context=portal)
             portletAssignments = getMultiAdapter(
                 (members, rightColumn,), ILocalPortletAssignmentManager)
             portletAssignments.setBlacklistStatus(CONTEXT_PORTLETS, True)
@@ -313,7 +316,7 @@ def registerToolsAsUtilities(context):
 
     for reg in registration:
         if sm.queryUtility(reg[1]) is None:
-            if reg[0] in portal.keys():
+            if reg[0] in list(portal.keys()):
                 tool = aq_base(portal[reg[0]])
                 sm.registerUtility(tool, reg[1])
 
@@ -360,7 +363,7 @@ def migrateLocalroleForm(context):
 
             aliases = fti.getMethodAliases()
             new_aliases = aliases.copy()
-            for k, v in aliases.items():
+            for k, v in list(aliases.items()):
                 if 'folder_localrole_form' in v:
                     new_aliases[k] = v.replace(
                         'folder_localrole_form', '@@sharing')

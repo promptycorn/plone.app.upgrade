@@ -154,7 +154,7 @@ def setupReferencebrowser(context):
     portal = getToolByName(context, 'portal_url').getPortalObject()
     skins_tool = getToolByName(portal, 'portal_skins')
     sels = skins_tool._getSelections()
-    for skinname, layer in sels.items():
+    for skinname, layer in list(sels.items()):
         layers = layer.split(',')
         if 'ATReferenceBrowserWidget' in layers:
             layers.remove('ATReferenceBrowserWidget')
@@ -191,7 +191,7 @@ def migrateActionIcons(context):
                 pass
         prefix = ''
 
-        if (cat not in _KNOWN_ACTION_ICONS.keys() or
+        if (cat not in list(_KNOWN_ACTION_ICONS.keys()) or
                 ident not in _KNOWN_ACTION_ICONS[cat]):
             continue
 
@@ -224,7 +224,7 @@ def migrateActionIcons(context):
 def addOrReplaceRamCache(context):
     portal = getToolByName(context, 'portal_url').getPortalObject()
     sm = getSiteManager(context=portal)
-    from zope.app.cache.interfaces.ram import IRAMCache as OldIRAMCache
+    from zope.ramcache.interfaces.ram import IRAMCache as OldIRAMCache
     sm.unregisterUtility(provided=OldIRAMCache)
     sm.unregisterUtility(provided=IRAMCache)
     sm.registerUtility(factory=RAMCache, provided=IRAMCache)
@@ -261,7 +261,7 @@ def changeAuthenticatedResourcesCondition(context):
                                'formsubmithelpers.js', 'unlockOnFormUnload.js')}
     ANON = ('not: portal/portal_membership/isAnonymousUser',
             'not:portal/portal_membership/isAnonymousUser', )
-    for tool_id, resource_ids in resources.items():
+    for tool_id, resource_ids in list(resources.items()):
         tool = getToolByName(context, tool_id, None)
         if tool is None:
             continue
@@ -348,9 +348,9 @@ def cleanUpToolRegistry(context):
     portal = getToolByName(context, 'portal_url').getPortalObject()
     toolset = context.getToolsetRegistry()
     required = toolset._required.copy()
-    existing = portal.keys()
+    existing = list(portal.keys())
     changed = False
-    for name, info in required.items():
+    for name, info in list(required.items()):
         if name not in existing:
             del required[name]
             changed = True
@@ -373,7 +373,7 @@ def cleanUpSkinsTool(context):
     - Remove invalid skin layers from all skin selections.
     """
     skins = getToolByName(context, 'portal_skins')
-    for layer, paths in skins.selections.items():
+    for layer, paths in list(skins.selections.items()):
         new_paths = []
         for name in paths.split(','):
             if name == 'plone_styles':
@@ -393,7 +393,7 @@ def cleanUpProductRegistry(context):
         products = control.Products
 
         # Remove all product entries
-        for name in products.keys():
+        for name in list(products.keys()):
             products._delObject(name)
     # else: pass  # Zope 4 doesn't have the Control_Panel anymore
 
@@ -407,7 +407,7 @@ def migrateStaticTextPortlets(context):
                 (obj, portlet_manager), IPortletAssignmentMapping, context=obj)
             if assignments is None:
                 continue
-            for portlet_id, portlet in assignments.items():
+            for portlet_id, portlet in list(assignments.items()):
                 if IStaticPortlet.providedBy(portlet) and \
                         getattr(portlet, 'hide', False):
                     logger.info(
@@ -566,7 +566,7 @@ def migrateTypeIcons(context):
     and set a default icon_expr value with old content_icon value string.
     """
     ttool = getToolByName(context, 'portal_types')
-    for type in ttool.values():
+    for type in list(ttool.values()):
         if 'content_icon' in type.__dict__:
             icon = type.content_icon
             if icon and not getattr(type, 'icon_expr', False):

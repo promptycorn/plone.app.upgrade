@@ -29,7 +29,6 @@ setup(
     url='https://pypi.org/project/plone.app.upgrade',
     license='GPL version 2',
     packages=find_packages(),
-    namespace_packages=['plone', 'plone.app'],
     include_package_data=True,
     zip_safe=False,
     extras_require=dict(
@@ -81,7 +80,7 @@ setup(
         'Products.ResourceRegistries',
         'Products.SecureMailHost',  # For migration only, when can we remove this?
         'Products.ZCatalog >= 2.13.4',
-        'Zope2',
+        'Zope',
     ],
     entry_points="""
     [z3c.autoinclude.plugin]
