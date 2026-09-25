@@ -78,7 +78,10 @@ setup(
         'Products.PluggableAuthService',
         'Products.PortalTransforms',
         'Products.ResourceRegistries',
-        'Products.SecureMailHost',  # For migration only, when can we remove this?
+        # Only old Python-2 databases can contain SecureMailHost objects.
+        # Fresh Python-3 sites use Products.MailHost; importing the legacy
+        # product during Zope startup fails on its Python-2 relative imports.
+        'Products.SecureMailHost; python_version < "3"',
         'Products.ZCatalog >= 2.13.4',
         'Zope',
     ],
